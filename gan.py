@@ -1,23 +1,36 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.utils.data.DataLoader as DataLoader
+from torch.utils.data import DataLoader
 import torchvision
+from torchvision import transforms
 class GAN(nn.Module):
     def __init__(self):
-        self.super().__init__()
+        super().__init__()
         self.G = Generator()
         self.D = Discriminator()
-    def train(self, args):
-        mnist_dataset = torchvision.datasets.MNIST()
-        dataloader = DataLoader(mnist_dataset, 
-                        batch_size=args.batch_size, 
-                        shuffle=True,)
+    def train(self):
+        mnist_dataset = torchvision.datasets.MNIST(
+            '/hdd/torchvision/',
+            download=True,
+            transform=transforms.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize((0.1307,), (0.3081, )),
+                ])
+            )
+
+        dataloader = DataLoader(mnist_dataset,
+            batch_size=8, 
+            shuffle=True)
+        
         epochs = 10
         for epoch in range(epochs):
-            for train_D_iter in range(train_D_iters):
-                self.train_D()
-            for train_G_iter in range(train_G_iters):
+            for train_D_iter in range(1):
+                for data, labels in dataloader:
+                    print(data.shape, labels.shape)
+                    self.train_D()
+
+            for train_G_iter in range(1):
                 self.train_G()
     def train_D(self):
         pass
@@ -33,7 +46,7 @@ class GAN(nn.Module):
 
 class Generator(nn.Module):
     def __init__(self):
-        self.super().__init__()
+        super().__init__()
         self.model = nn.Sequential()
         pass
     def forward(self, latent):
@@ -41,8 +54,9 @@ class Generator(nn.Module):
 
 class Discriminator(nn.Module):
     def __init__(self):
-        self.super().__init__()
-        self.model = nn.Sequential()
+        super().__init__()
+        self.model = nn.Sequential(
+        )
         pass
     def forward(self, input):
         return self.model(input)
