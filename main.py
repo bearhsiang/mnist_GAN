@@ -2,7 +2,7 @@ import torch
 import torchvision
 from torchvision import transforms, datasets
 from torch.utils.data import DataLoader
-from gan import GAN
+from cgan import GAN
 
 
 
@@ -21,7 +21,11 @@ if __name__ == '__main__':
         ])
     )
 
-    model = GAN(device = device, batch_size=batch_size).to(device)
+    model = GAN(device = device,
+            batch_size=batch_size,
+            class_num=10,
+            class_emb=64,
+        ).to(device)
 
     dataloader = DataLoader(mnist_dataset,
         batch_size=batch_size, 
